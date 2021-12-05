@@ -1,0 +1,12 @@
+{
+    "editor.tokenColorCustomizations": {
+        "[Hotline]": {
+            "functions": "#EE9D06",
+            "numbers": "#ff70d2",
+            "comments": "#EEEE88",
+            "variables": "#988fff"
+        },
+        "comments": "",
+        "textMateRules": []
+    }
+}
