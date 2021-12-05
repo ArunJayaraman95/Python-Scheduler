@@ -1,6 +1,6 @@
 class Course:
     def __init__(self, name, start, end, days):
-        """Days is a list with values from 1-5 for M-W"""
+        """Days is a list with values from 1-5 for M-F"""
         self.name = name
         self.start = start
         self.end = end
@@ -8,12 +8,18 @@ class Course:
 
     def getName(self):
         return self.name
+
     def getStart(self):
         return self.start
+
     def getEnd(self):
         return self.end
+
     def getDays(self):
         return self.days
+
+    def __repr__(self):
+        return self.name
 
 testData = [
     Course("Stats", 1030, 1120, [1, 3, 5]),
