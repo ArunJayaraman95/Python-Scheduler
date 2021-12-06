@@ -1,3 +1,8 @@
+from tkinter import *
+
+
+#region Calculation
+
 class Course:
     def __init__(self, name, start, end, days):
         """Days is a list with values from 1-5 for M-F"""
@@ -80,11 +85,49 @@ mostClasses = max([len(schedule) for schedule in possibleSchedules])
 
 print('\n\n\nCourse Combos\n=========\n')
 
+testCourse = None
 for schedule in possibleSchedules:
     if len(schedule) >= mostClasses - 1:
         if len(schedule) == mostClasses:
+            if not testCourse:
+                testCourse = schedule
             print("Optimal:\n")
         # print(p, "\n")
         for course in schedule:
             print(course)
         print('===========================')
+#endregion
+
+
+
+
+print('<><><><><><><><><><><><><><><><><>')
+root = Tk()
+root.geometry("1900x1080")
+# Create windows for each possible schedule
+# Be able to go back and forth on each
+
+increment = 30
+for i in range(800, 2200, increment):
+    timeStamp = Label(root, bg = "#AAA", text = intToTime(i))
+    timeStamp.grid(row = i, column = 1, rowspan = increment,columnspan = 2, sticky='news')
+for course in testCourse:
+    print(course)
+    start = course.getStart()
+    span = course.getEnd() - course.getStart()
+    # TODO ~ Convert to actual spanning time for correct scale visually
+    print(start, span)
+    for day in course.getDays():
+        t = Label(root, bg = "#FF0", text = course.getName())
+        t.grid(row = start, column = day + 2, rowspan = span, sticky='nesw')
+
+
+
+#Create a label Widgetf
+# titleLabel1 = Label(root, text = "HI")
+# titleLabel2 = Label(root, text = "New guy")
+# titleLabel3 = Label(root, text = "Super cool dudee")
+# titleLabel1.grid(row = 0, column = 0)
+# titleLabel2.grid(row = 1, column = 5)
+# titleLabel3.grid(row = 1, column = 1)
+root.mainloop()
