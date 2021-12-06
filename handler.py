@@ -109,8 +109,10 @@ mostClasses = max([len(schedule) for schedule in possibleSchedules])
 print('\n\n\nCourse Combos\n=========\n')
 
 testCourse = None
+accepted = []
 for schedule in possibleSchedules:
     if len(schedule) >= mostClasses - 1:
+        accepted.append(schedule)
         if len(schedule) == mostClasses:
             if not testCourse:
                 testCourse = schedule
@@ -125,12 +127,12 @@ for schedule in possibleSchedules:
 
 
 
-print('<><><><><><><><><><><><><><><><><>')
-print('<><><><><><><><><><><><><><><><><>')
-print('<><><><><><><><><><><><><><><><><>')
-print('<><><><><><><><><><><><><><><><><>')
-print('<><><><><><><><><><><><><><><><><>')
-print('<><><><><><><><><><><><><><><><><>')
+# print('<><><><><><><><><><><><><><><><><>')
+# print('<><><><><><><><><><><><><><><><><>')
+# print('<><><><><><><><><><><><><><><><><>')
+# print('<><><><><><><><><><><><><><><><><>')
+# print('<><><><><><><><><><><><><><><><><>')
+# print('<><><><><><><><><><><><><><><><><>')
 
 root = Tk()
 root.state("zoomed")
@@ -139,12 +141,15 @@ SH = root.winfo_screenheight()
 
 # Create windows for each possible schedule
 # Be able to go back and forth on each
+frames = [Frame(root, bg = "")]*len(accepted)
+print(len(accepted))
 
 # Fonts
 
 font1 = ('Arial', 15)
 
 
+# CONFIGURING LABELS (INDEPENDENT)
 
 # Create time labels
 timeLabel = Label(root, bg = "#D44", text = "Time\Day")
@@ -167,6 +172,8 @@ for i, day in enumerate(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
     dayLabel = Label(root, bg = "#999", text = day, font = font1)
     dayLabel.grid(row = 0, column = i + 1, sticky = 'news')
 
+
+
 colorList = [
     "#d62d5e",
     "#e77b55",
@@ -179,20 +186,31 @@ colorList = [
     "#cad4f3",
     "#fad8fb"]
 
+# DEPENDENT
+labels = []
 # Add courses into schedule
 for c, course in enumerate(testCourse):
     if c > len(colorList):
         color = "#DDD"
     color = colorList[c]
-    print(course)
+    # print(course)
     start = minutesSinceMidnight(badIntToTime(course.getStart()))
     span = minutesSinceMidnight(badIntToTime(course.getEnd())) - start
-    # TODO ~ Convert to actual spanning time for correct scale visually
-    print(f'{start = }')
-    print(f'{span = }')
+
     for day in course.getDays():
         t = Label(root, bg = color, text = course.getName(),borderwidth = 3, relief="ridge", font = ("Times New Roman", 15))
         t.grid(row = start - 420, column = day + 1, columnspan=1, rowspan = span, sticky='nesw')
+        labels.append(t)
+
+        
+# Sidebars
+
+# Button to clear label
+def clearLabels():
+    for label in labels:
+        label.destroy()
+deleteButton = Button(root, text = "Delete", command = clearLabels, padx = 5, pady = 5)
+deleteButton.grid(row = 0, column = 9)
 
 for i in range(8):
     root.columnconfigure(i, minsize = (3/4)*(1/8)*SW)
