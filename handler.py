@@ -110,8 +110,11 @@ print('\n\n\nCourse Combos\n=========\n')
 
 testCourse = None
 accepted = []
+notLookingForMost = False
 for schedule in possibleSchedules:
-    if len(schedule) >= mostClasses - 1:
+    if notLookingForMost:
+        mostClasses -= 1
+    if len(schedule) >= mostClasses:
         accepted.append(schedule)
         if len(schedule) == mostClasses:
             if not testCourse:
@@ -138,11 +141,6 @@ root = Tk()
 root.state("zoomed")
 SW = root.winfo_screenwidth()
 SH = root.winfo_screenheight()
-
-# Create windows for each possible schedule
-# Be able to go back and forth on each
-frames = [Frame(root, bg = "")]*len(accepted)
-print(len(accepted))
 
 # Fonts
 
@@ -188,34 +186,75 @@ colorList = [
 
 # DEPENDENT
 labels = []
+sIndex = 0
+
+# for i in accepted:
+#     for j in i:
+#         print(j)
+# print()
+# print(len(accepted))
 # Add courses into schedule
-for c, course in enumerate(testCourse):
-    if c > len(colorList):
-        color = "#DDD"
-    color = colorList[c]
-    # print(course)
-    start = minutesSinceMidnight(badIntToTime(course.getStart()))
-    span = minutesSinceMidnight(badIntToTime(course.getEnd())) - start
+def generate():
+    global sIndex
+    for c, course in enumerate(accepted[sIndex]):
+        if c > len(colorList):
+            color = "#DDD"
+        color = colorList[c]
+        # print(course)
+        start = minutesSinceMidnight(badIntToTime(course.getStart()))
+        span = minutesSinceMidnight(badIntToTime(course.getEnd())) - start
 
-    for day in course.getDays():
-        t = Label(root, bg = color, text = course.getName(),borderwidth = 3, relief="ridge", font = ("Times New Roman", 15))
-        t.grid(row = start - 420, column = day + 1, columnspan=1, rowspan = span, sticky='nesw')
-        labels.append(t)
-
+        for day in course.getDays():
+            t = Label(root, bg = color, text = course.getName(),borderwidth = 3, relief="ridge", font = ("Times New Roman", 15))
+            t.grid(row = start - 420, column = day + 1, columnspan=1, rowspan = span, sticky='nesw')
+            labels.append(t)
+    # Descriptive Labels
+    nameLabel = Label(root, text = f'Schedule #{sIndex + 1} of {len(accepted)}', font = ('Arial', 20))
+    nameLabel.grid(row = 0, column = 9, columnspan = 1, pady = 10)
+    T = Text(root, bg = "gray", height = 4)
+    T.grid(row = 1, column = 8, rowspan = 1000)
+generate()
         
 # Sidebars
 
 # Button to clear label
-def clearLabels():
+def clearSchedule():
     for label in labels:
         label.destroy()
-deleteButton = Button(root, text = "Delete", command = clearLabels, padx = 5, pady = 5)
-deleteButton.grid(row = 0, column = 9)
+
+def prevCombo():
+    global sIndex
+
+    clearSchedule()
+
+    if sIndex != 0:
+        sIndex -= 1
+
+    generate()
+
+def nextCombo():
+    global sIndex
+
+    clearSchedule()
+
+    if sIndex != len(accepted) - 1:
+        sIndex += 1
+
+    generate()
+
+prevB = Button(root, text = "Prev", command = prevCombo, pady = 5, bg = "lightblue", font = font1, padx = 10)
+nextB = Button(root, text = "Next", command = nextCombo, pady = 5, bg = "lightblue", font = font1, padx = 10)
+
+prevB.grid(row = 0, column = 8)
+nextB.grid(row = 0, column = 10)
 
 for i in range(8):
     root.columnconfigure(i, minsize = (3/4)*(1/8)*SW)
 
 root.rowconfigure(0, minsize = SH/100)
+root.columnconfigure(8, minsize = (3/4)*(1/12)*SW)
+root.columnconfigure(9, minsize = (3/4)*(1/8)*SW)
+root.columnconfigure(10, minsize = (3/4)*(1/12)*SW)
 
 root.mainloop()
 
