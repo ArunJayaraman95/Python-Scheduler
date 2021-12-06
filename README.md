@@ -1,6 +1,3 @@
-# Scheduler
-Program to create all permutations of schedules possible for my university
-Test Commit
 # Scheduler :school:
 ## Overview
 Program to create all permutations of schedules possible for my university. When registering for classes, instead of having to go back and forth to see if different class sections conflict with the other class sections, why not put all possible considerations for those sections into a program that generates all possible schedules for you with no time conflicts?!
