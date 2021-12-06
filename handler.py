@@ -1,4 +1,5 @@
 from tkinter import *
+import random
 
 
 #region Calculation
@@ -25,10 +26,32 @@ class Course:
         return self.days
 
     def __repr__(self):
-        return f'{self.name}:\t {intToTime(self.start)} - {intToTime(self.end)} \ton {"-".join([self.dayOfWeek[x] for x in self.days])}'
+        return f'{self.name}:\t {badIntToTime(self.start)} - {badIntToTime(self.end)} \ton {"-".join([self.dayOfWeek[x] for x in self.days])}'
 
-def intToTime(t):
+
+def badIntToTime(t) -> str:
     return f'{str(t)[:-2] if t < 1200 else str(t-1200)[:-2]}:{str(t)[-2:]}{["AM","PM"][t >= 1200]}'
+
+
+def MidToTime(t) -> str:
+    minutes = t % 60
+    hours = int((t-minutes)/60)
+    #print(hours,minutes)
+    if hours == 0: hours = 12
+    res = f'{hours-12 if hours > 12 else hours}:{str(minutes).zfill(2)}{["AM","PM"][t > 719]}'
+    return res
+
+
+def minutesSinceMidnight(timeString) -> int:
+    digits = [x for x in timeString if x.isdigit()]
+    digits = int(''.join(digits))
+    if 1200 <= digits <= 1259:
+        digits -= 1200
+    if 'PM' in timeString: 
+        digits += 1200
+    minutes = digits % 100
+    hours = (digits - minutes)/100
+    return int(60 * hours + minutes)
 
 courses = [
     Course("Stats", 1030, 1120, [1, 3, 5]),
@@ -103,31 +126,76 @@ for schedule in possibleSchedules:
 
 print('<><><><><><><><><><><><><><><><><>')
 root = Tk()
-root.geometry("1900x1080")
+root.state("zoomed")
+SW = root.winfo_screenwidth()
+SH = root.winfo_screenheight()
+
 # Create windows for each possible schedule
 # Be able to go back and forth on each
 
-increment = 30
-for i in range(800, 2200, increment):
-    timeStamp = Label(root, bg = "#AAA", text = intToTime(i))
-    timeStamp.grid(row = i, column = 1, rowspan = increment,columnspan = 2, sticky='news')
-for course in testCourse:
+# Fonts
+
+font1 = ('Arial', 15)
+
+
+
+# Create time labels
+timeLabel = Label(root, bg = "#D44", text = "Time\Day")
+timeLabel.grid(row = 0, column = 0, sticky = 'news')
+for i in range(31):
+    c = "#DEE2F0" if i % 2 else "#D3D3F0"
+    timeStamp = Label(root, bg = c, text = MidToTime(420 + 30*i), font = font1, pady = 1)
+    timeStamp.grid(row = 30*i + 1, rowspan = 30, column = 0,columnspan = 1, sticky = "news")
+    print(i)
+    for j in range(7):
+        print("HELLO", i, j)
+        if i % 2:
+            c = "#DEE2E1" if j % 2 else "#DFE0E0"
+        else:
+            c = "#D3D3D3" if j % 2 else "#C8C8C8"
+        dummy = Label(root, bg = c, text = '.', fg = c)
+        dummy.grid(row = 30*i+1, column = j + 1, rowspan = 30, sticky = 'news')
+
+# Create weekday labels
+for i, day in enumerate(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']):
+    dayLabel = Label(root, bg = "#999", text = day, font = font1)
+    dayLabel.grid(row = 0, column = i + 1, sticky = 'news')
+
+colorList = [
+    "#d62d5e",
+    "#e77b55",
+    "#fade9c",
+    "#4ddbb9",
+    "#8e8beb",
+    "#f9b8b8",
+    "#f3f5c8",
+    "#abf8f2",
+    "#cad4f3",
+    "#fad8fb"]
+
+# Add courses into schedule
+for c, course in enumerate(testCourse):
+    if c > len(colorList):
+        color = "#DDD"
+    color = colorList[c]
     print(course)
-    start = course.getStart()
-    span = course.getEnd() - course.getStart()
+    start = minutesSinceMidnight(badIntToTime(course.getStart()))
+    span = minutesSinceMidnight(badIntToTime(course.getEnd())) - start
     # TODO ~ Convert to actual spanning time for correct scale visually
-    print(start, span)
+    print(f'{start = }')
+    print(f'{span = }')
     for day in course.getDays():
-        t = Label(root, bg = "#FF0", text = course.getName())
-        t.grid(row = start, column = day + 2, rowspan = span, sticky='nesw')
+        t = Label(root, bg = color, text = course.getName(),borderwidth = 3, relief="ridge", font = ("Times New Roman", 15))
+        t.grid(row = start - 420, column = day + 1, columnspan=1, rowspan = span, sticky='nesw')
 
+for i in range(8):
+    root.columnconfigure(i, minsize = (3/4)*(1/8)*SW)
 
+root.rowconfigure(0, minsize = SH/100)
 
-#Create a label Widgetf
-# titleLabel1 = Label(root, text = "HI")
-# titleLabel2 = Label(root, text = "New guy")
-# titleLabel3 = Label(root, text = "Super cool dudee")
-# titleLabel1.grid(row = 0, column = 0)
-# titleLabel2.grid(row = 1, column = 5)
-# titleLabel3.grid(row = 1, column = 1)
 root.mainloop()
+
+# x = minutesSinceMidnight("12:59AM")
+# print(x)
+# x = MidToTime(x)
+# print(x)
