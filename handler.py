@@ -98,8 +98,8 @@ for inc in range(limit):
             else:
                 pass
     if poss:
-        print(tempCourses)
-        print("SUCCESS")
+        #print(tempCourses)
+        #print("SUCCESS")
         possibleSchedules.append(tempCourses)
         pass
 
@@ -114,17 +114,24 @@ for schedule in possibleSchedules:
         if len(schedule) == mostClasses:
             if not testCourse:
                 testCourse = schedule
-            print("Optimal:\n")
+            # print("Optimal:\n")
         # print(p, "\n")
         for course in schedule:
-            print(course)
-        print('===========================')
+            #print(course)
+            pass
+        # print('===========================')
 #endregion
 
 
 
 
 print('<><><><><><><><><><><><><><><><><>')
+print('<><><><><><><><><><><><><><><><><>')
+print('<><><><><><><><><><><><><><><><><>')
+print('<><><><><><><><><><><><><><><><><>')
+print('<><><><><><><><><><><><><><><><><>')
+print('<><><><><><><><><><><><><><><><><>')
+
 root = Tk()
 root.state("zoomed")
 SW = root.winfo_screenwidth()
@@ -146,9 +153,8 @@ for i in range(31):
     c = "#DEE2F0" if i % 2 else "#D3D3F0"
     timeStamp = Label(root, bg = c, text = MidToTime(420 + 30*i), font = font1, pady = 1)
     timeStamp.grid(row = 30*i + 1, rowspan = 30, column = 0,columnspan = 1, sticky = "news")
-    print(i)
+    # print(i)
     for j in range(7):
-        print("HELLO", i, j)
         if i % 2:
             c = "#DEE2E1" if j % 2 else "#DFE0E0"
         else:
