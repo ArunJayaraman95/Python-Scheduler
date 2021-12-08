@@ -1,6 +1,4 @@
 from tkinter import *
-import random
-
 
 #region Calculation
 
@@ -55,6 +53,8 @@ def minutesSinceMidnight(timeString) -> int:
 
 courses = [
     Course("Stats", 1030, 1120, [1, 3, 5]),
+    Course("Stats", 1050, 1120, [1, 3, 5]),
+    Course("Stats", 930, 1020, [1, 3, 5]),
     Course("Algorithms", 1730, 1845, [2, 4]),
     Course("Game Design", 1730, 1845, [1, 3]),
     Course("Numerical", 1600, 1715, [2,4]),
@@ -71,8 +71,12 @@ possibleSchedules = []
 def conflict(A: Course, B: Course):
     """Checks if there's a conflict between 2 classes. In other words, if 2 classes overlap in times on the same days"""
 
+    # If the same object, return no conflict
     if A == B:
         return False
+    # If objects aren't the same but have the same name, return a conflict
+    if A.getName() == B.getName():
+        return True
 
     conflictDay = False
     for aDays in A.getDays():
@@ -81,6 +85,7 @@ def conflict(A: Course, B: Course):
 
     conflictTimes = (A.getStart() <= B.getStart() <= A.getEnd()) or (B.getStart() <= A.getStart() <= B.getEnd())
     return conflictTimes and conflictDay
+
 
 # Check conflicts
 for inc in range(limit):
@@ -211,10 +216,11 @@ def generate():
     # Descriptive Labels
     nameLabel = Label(root, text = f'Schedule #{sIndex + 1} of {len(accepted)}', font = ('Arial', 20))
     nameLabel.grid(row = 0, column = 9, columnspan = 1, pady = 10)
-    T = Text(root, bg = "gray", height = 4)
-    T.grid(row = 1, column = 8, rowspan = 1000)
+    
+# Generate first schedule  
 generate()
-        
+
+
 # Sidebars
 
 # Button to clear label
